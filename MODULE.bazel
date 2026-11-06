@@ -17,6 +17,18 @@ bazel_dep(name = "abseil-cpp", version = "20250814.1")
 bazel_dep(name = "rules_python", version = "1.7.0")
 bazel_dep(name = "pybind11_bazel", version = "3.0.0")
 
+# Use pybind11 3.1.0 until its Bazel wrapper publishes a matching version.
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "pybind11",
+    build_file = "@pybind11_bazel//:pybind11-BUILD.bazel",
+    sha256 = "ef712655692a2e9bf7bb7874c022564a45f91d847ddee987e720cd9e28849665",
+    strip_prefix = "pybind11-3.1.0",
+    urls = ["https://github.com/pybind/pybind11/archive/refs/tags/v3.1.0.tar.gz"],
+)
+pybind11_configure = use_extension("@pybind11_bazel//:internal_configure.bzl", "internal_configure_extension")
+override_repo(pybind11_configure, "pybind11")
+
 # This is a temporary hack for `x64_x86_windows`.
 # TODO(junyer): Remove whenever no longer needed.
 cc_configure = use_extension("@rules_cc//cc:extensions.bzl", "cc_configure_extension", dev_dependency = True)

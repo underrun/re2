@@ -253,7 +253,8 @@ class Filter {
   std::unique_ptr<RE2::Set> set_;
 };
 
-PYBIND11_MODULE(_re2, module) {
+PYBIND11_MODULE(_re2, module,
+                py::multiple_interpreters::per_interpreter_gil()) {
   // Translate exceptions thrown by py::pybind11_fail() into Python.
   py::register_local_exception<std::runtime_error>(module, "Error");
 
